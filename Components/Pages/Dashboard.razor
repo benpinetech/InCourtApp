@@ -1,0 +1,12 @@
+@page "/dashboard"
+@attribute [Authorize]
+
+<AuthorizeView>
+    <Authorized>
+        <h1>Dashboard</h1>
+        <p>Welcome, @context.User.Identity?.Name</p>
+    </Authorized>
+    <NotAuthorized>
+        <p>You are not authorized.</p>
+    </NotAuthorized>
+</AuthorizeView>
