@@ -1,0 +1,42 @@
+@page "/login"
+@inject AuthService AuthService
+@inject CustomAuthStateProvider AuthProvider
+@inject NavigationManager Nav
+
+<h3>Login</h3>
+
+@if (!string.IsNullOrEmpty(error))
+{
+    <div class="text-danger">@error</div>
+}
+
+<EditForm Model="credentials" OnValidSubmit="HandleLogin">
+    <InputText @bind-Value="credentials.Username" placeholder="Username" class="form-control mb-2" />
+    <InputText @bind-Value="credentials.Password" placeholder="Password" type="password" class="form-control mb-2" />
+    <button class="btn btn-primary" type="submit">Login</button>
+</EditForm>
+
+@code {
+    private LoginModel credentials = new();
+    private string? error;
+
+    private async Task HandleLogin()
+    {
+        var success = await AuthService.LoginAsync(credentials.Username, credentials.Password);
+        if (success)
+        {
+            AuthProvider.NotifyAuthenticationStateChanged();
+            Nav.NavigateTo("/dashboard");
+        }
+        else
+        {
+            error = "Invalid credentials";
+        }
+    }
+
+    public class LoginModel
+    {
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+}
